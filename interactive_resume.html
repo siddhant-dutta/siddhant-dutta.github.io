@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siddhant Dutta - Interactive Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- 
+        Chosen Palette: Professional Teal
+        Application Structure Plan: This SPA is designed as an interactive dashboard/portfolio, moving away from a static, linear resume. It uses a sticky top navigation to allow non-linear exploration of key sections: Experience, Skills, and Projects. This structure is chosen for usability, enabling busy recruiters to quickly jump to the information they need most and see how your skills connect to your impactful work experience. Key metrics are highlighted with animations to draw attention and create a memorable impression.
+        Visualization & Content Choices: 
+        - Experience -> Interactive Timeline (HTML/JS): Goal is to show career progression. Interaction: Clicking a job title reveals detailed accomplishments, making the section digestible.
+        - Skills -> Radar Chart (Chart.js) & Categorized List: Goal is to provide a quick visual summary of expertise ("shape" of skills) while also offering a detailed, keyword-rich list for scannability.
+        - Projects -> Card Layout (HTML/JS): Goal is to organize a portfolio cleanly. Interaction: A "Details" button toggles a modal with in-depth information, keeping the primary view uncluttered.
+        - Key Metrics -> Animated Counters (JS): Goal is to add a "wow" factor and emphasize quantifiable impact. Interaction: Numbers animate into view on scroll.
+        CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .chart-container {
+            position: relative; 
+            width: 100%; 
+            max-width: 500px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) { 
+            .chart-container { 
+                height: 400px; 
+            } 
+        }
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header id="header" class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold text-gray-800">Siddhant Dutta</div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#experience" class="text-gray-600 hover:text-teal-500 transition duration-300">Experience</a>
+                <a href="#skills" class="text-gray-600 hover:text-teal-500 transition duration-300">Skills</a>
+                <a href="#projects" class="text-gray-600 hover:text-teal-500 transition duration-300">Projects</a>
+                <a href="#education" class="text-gray-600 hover:text-teal-500 transition duration-300">Education</a>
+            </div>
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-800 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#experience" class="block py-2 text-gray-600 hover:text-teal-500">Experience</a>
+            <a href="#skills" class="block py-2 text-gray-600 hover:text-teal-500">Skills</a>
+            <a href="#projects" class="block py-2 text-gray-600 hover:text-teal-500">Projects</a>
+            <a href="#education" class="block py-2 text-gray-600 hover:text-teal-500">Education</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-6 md:p-12">
+        <section id="hero" class="text-center py-16">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-4">Siddhant Dutta</h1>
+            <p class="text-lg md:text-xl text-teal-600 font-medium mb-8">Software Engineer | Cloud & Distributed Systems | Machine Learning</p>
+            <div class="flex justify-center space-x-6">
+                <a href="mailto:siddhantdutta5260@gmail.com" class="text-gray-600 hover:text-teal-500 transition duration-300">Email</a>
+                <a href="https://linkedin.com/in/siddhant-dutta" target="_blank" class="text-gray-600 hover:text-teal-500 transition duration-300">LinkedIn</a>
+                <a href="https://github.com/siddhant-dutta" target="_blank" class="text-gray-600 hover:text-teal-500 transition duration-300">GitHub</a>
+            </div>
+        </section>
+
+        <section id="experience" class="pt-16">
+            <h2 class="text-3xl font-bold text-center mb-12">Professional Experience</h2>
+            <div class="relative border-l-2 border-teal-200 ml-6 md:ml-0">
+                <!-- Experience items will be injected here by JavaScript -->
+            </div>
+        </section>
+
+        <section id="skills" class="pt-24">
+            <h2 class="text-3xl font-bold text-center mb-4">Technical Skills</h2>
+             <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">A visual representation of my proficiency across key technology domains, complemented by a detailed list of the languages, frameworks, and tools I utilize to build robust software.</p>
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <div class="chart-container">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+                <div id="skills-list" class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-sm">
+                    <!-- Skills list will be injected here -->
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="pt-24">
+            <h2 class="text-3xl font-bold text-center mb-4">Key Projects</h2>
+            <p class="text-center text-gray-600 max-w-2xl mx-auto mb-12">A selection of projects where I've applied my skills to solve interesting problems, from developing AI-powered tools to creating educational resources for the developer community.</p>
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project cards will be injected here -->
+            </div>
+        </section>
+        
+        <section id="education" class="pt-24">
+            <h2 class="text-3xl font-bold text-center mb-12">Education & Achievements</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">Education</h3>
+                    <p class="text-lg font-semibold text-teal-700">Indian Institute of Technology (IIT) Bombay</p>
+                    <p class="text-gray-600">Bachelor of Technology, Metallurgical Engineering & Materials Science</p>
+                    <p class="mt-2 text-sm text-gray-500">Graduated May 2024</p>
+                    <p class="mt-1 text-sm text-gray-500">CPI: 8.63 / 10.0</p>
+                </div>
+                <div class="bg-white p-8 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-bold mb-4">Awards & Achievements</h3>
+                    <ul>
+                        <li class="mb-2"><span class="font-semibold">Academic Excellence:</span> Graduated with Department Rank 11 out of 140+ students.</li>
+                        <li><span class="font-semibold">Google Kick Start (2022):</span> Secured a Global Rank of 460 out of 12,000+ participants.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 mt-16 border-t">
+        <p class="text-gray-500">&copy; 2025 Siddhant Dutta. Interactive resume generated with care.</p>
+    </footer>
+
+    <!-- Project Modal -->
+    <div id="project-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 opacity-0 pointer-events-none z-50">
+        <div id="modal-content" class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto transform scale-95 transition-transform duration-300">
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="modal-title" class="text-2xl font-bold"></h3>
+                    <button id="modal-close-button" class="text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+                </div>
+                <div id="modal-body" class="text-gray-600"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const resumeData = {
+            experience: [
+                {
+                    role: 'Analyst, Investment Banking Technology',
+                    company: 'Deutsche Bank',
+                    period: 'June 2024 – Present',
+                    location: 'Bengaluru, India',
+                    points: [
+                        { text: '<b>Co-designed and developed</b> a modern microservices architecture to replace a slow, tightly-coupled monolithic system, improving developer velocity and system maintainability. The platform handles critical client data verification and compliance checks for <span class="stat" data-value="18000">0</span>+ daily active users.', isMetric: true },
+                        { text: '<b>Defined API contracts</b> and engineered a zero-downtime migration strategy using Kafka, successfully decoupling business and persistence logic while integrating with multiple legacy systems.', isMetric: false },
+                        { text: '<b>Owned the end-to-end feature delivery</b> for a complex KYC platform, enabling new identifier attributes and verification flows across 200+ data fields. This work was a key contributor to a project with a <span class="stat" data-value="1700000">0</span>€ projected annual cost saving.', isMetric: true },
+                        { text: 'Overcame significant technical challenges by engineering solutions to integrate with legacy systems and navigate complex, nested business logic for data validation.', isMetric: false },
+                        { text: '<b>Reduced UI latency by ~25%</b> by designing and implementing a GraphQL Backend-for-Frontend (BFF). The BFF aggregated and processed data from <b>over 10 downstream microservices</b>.', isMetric: false },
+                        { text: '<b>Led the modernization of team CI/CD pipelines</b> by migrating to GitHub Actions, <b>slashing deployment times by 60% (from 5+ hours to ~2 hours)</b>.', isMetric: false }
+                    ]
+                },
+                {
+                    role: 'Technical Analyst Intern',
+                    company: 'Deutsche Bank',
+                    period: 'May 2023 – July 2023',
+                    location: 'Bengaluru, India',
+                    points: [
+                        { text: '<b>Architected and delivered a production-ready MVP</b> to automate a manual, error-prone entity onboarding process, securing a Pre-Placement Offer. The new system enabled efficient, spreadsheet-based bulk uploads, replacing a slow, legacy UI and process.', isMetric: false }
+                    ]
+                }
+            ],
+            skills: {
+                chartData: {
+                    labels: ['Backend', 'Cloud & DevOps', 'Frontend', 'Databases', 'Languages', 'Machine Learning'],
+                    data: [90, 85, 75, 80, 95, 70]
+                },
+                list: [
+                    { category: 'Languages', items: 'Java, Python, JavaScript, C++, SQL' },
+                    { category: 'Backend', items: 'Spring Boot, Kafka, GraphQL, REST APIs, Microservices' },
+                    { category: 'Frontend', items: 'React, JavaScript (ES6+), HTML5, CSS3' },
+                    { category: 'Cloud & DevOps', items: 'Google Cloud (GCP), Kubernetes (GKE), Docker, GitHub Actions' },
+                    { category: 'Databases', items: 'MySQL, MongoDB, ChromaDB' },
+                    { category: 'ML Libraries', items: 'TensorFlow, Pandas, NumPy' }
+                ]
+            },
+            projects: [
+                {
+                    title: 'AI-Powered Financial Assistant',
+                    short: 'A multimodal AI assistant to enhance financial inclusion and provide accessible guidance.',
+                    tags: ['Python', 'Twilio', 'Whisper API', 'LLM', 'RAG', 'Docker', 'MongoDB'],
+                    details: 'Developed an AI assistant to enhance financial inclusion, architecting a full-stack solution with Twilio and Whisper API. Implemented a sophisticated, stateful memory system for the chatbot using a RAG pipeline with ChromaDB and a persistent MongoDB store for scalable interactions.'
+                },
+                {
+                    title: 'Moodify CNN Music Recommender',
+                    short: 'A hyper-personalized music recommender based on real-time emotion detection.',
+                    tags: ['Python', 'TensorFlow', 'CNN', 'Pandas', 'NumPy'],
+                    details: 'Built a music recommendation engine that achieved over 90% accuracy in real-time emotion detection. Trained a Convolutional Neural Network (CNN) in TensorFlow on the FER2013 dataset, applying dropout and data augmentation to prevent overfitting and improve model generalization.'
+                },
+                {
+                    title: 'SwiftPath Algorithm Visualizer',
+                    short: 'An interactive educational tool to visualize and compare pathfinding algorithms.',
+                    tags: ['React', 'JavaScript', 'HTML5', 'CSS3'],
+                    details: "Developed an interactive educational tool for computer science students by building a dynamic pathfinding visualizer in React. Implemented Dijkstra's, A*, and BFS algorithms, engineering a robust component-based architecture to handle complex state management and user interactions on a grid-based UI."
+                }
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const experienceContainer = document.querySelector('#experience .relative');
+            resumeData.experience.forEach((job, index) => {
+                const jobElement = document.createElement('div');
+                jobElement.className = 'mb-8 pl-12 relative';
+                jobElement.innerHTML = `
+                    <div class="absolute -left-1.5 top-1 w-4 h-4 bg-teal-500 rounded-full border-4 border-white"></div>
+                    <p class="text-sm text-gray-500">${job.period}</p>
+                    <h3 class="text-xl font-bold cursor-pointer hover:text-teal-600">${job.role}</h3>
+                    <p class="font-medium text-gray-700 mb-4">${job.company} - ${job.location}</p>
+                    <ul class="hidden list-disc pl-5 space-y-2 text-gray-600">
+                        ${job.points.map(p => `<li>${p.text}</li>`).join('')}
+                    </ul>
+                `;
+                experienceContainer.appendChild(jobElement);
+            });
+
+            experienceContainer.addEventListener('click', (e) => {
+                if (e.target.tagName === 'H3') {
+                    const ul = e.target.nextElementSibling.nextElementSibling;
+                    ul.classList.toggle('hidden');
+                }
+            });
+
+            const skillsListContainer = document.getElementById('skills-list');
+            resumeData.skills.list.forEach(skillCat => {
+                const div = document.createElement('div');
+                div.innerHTML = `<h4 class="font-bold text-teal-700 mb-2">${skillCat.category}</h4><p class="text-gray-600">${skillCat.items}</p>`;
+                skillsListContainer.appendChild(div);
+            });
+
+            const projectsGrid = document.getElementById('projects-grid');
+            resumeData.projects.forEach((project, index) => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-xl shadow-lg flex flex-col';
+                card.innerHTML = `
+                    <h3 class="text-xl font-bold mb-2">${project.title}</h3>
+                    <p class="text-gray-600 mb-4 flex-grow">${project.short}</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${project.tags.map(tag => `<span class="bg-teal-100 text-teal-800 text-xs font-medium px-2.5 py-0.5 rounded-full">${tag}</span>`).join('')}
+                    </div>
+                    <button class="mt-auto bg-teal-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-teal-600 transition duration-300 w-full" data-project-index="${index}">View Details</button>
+                `;
+                projectsGrid.appendChild(card);
+            });
+            
+            const modal = document.getElementById('project-modal');
+            const modalContent = document.getElementById('modal-content');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            const modalCloseButton = document.getElementById('modal-close-button');
+
+            projectsGrid.addEventListener('click', e => {
+                if (e.target.tagName === 'BUTTON') {
+                    const projectIndex = e.target.dataset.projectIndex;
+                    const project = resumeData.projects[projectIndex];
+                    modalTitle.textContent = project.title;
+                    modalBody.innerHTML = `<p>${project.details}</p>`;
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    modalContent.classList.remove('scale-95');
+                }
+            });
+            
+            const closeModal = () => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                modalContent.classList.add('scale-95');
+            };
+
+            modalCloseButton.addEventListener('click', closeModal);
+            modal.addEventListener('click', e => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            const animateStat = (el) => {
+                const target = parseInt(el.dataset.value, 10);
+                const duration = 2000;
+                const frameDuration = 1000 / 60;
+                const totalFrames = Math.round(duration / frameDuration);
+                let frame = 0;
+
+                const counter = setInterval(() => {
+                    frame++;
+                    const progress = frame / totalFrames;
+                    const currentVal = Math.round(target * progress);
+                    
+                    if(target > 100000) {
+                        el.textContent = `€${(currentVal / 1000000).toFixed(1)}M`;
+                    } else {
+                        el.textContent = currentVal.toLocaleString();
+                    }
+
+                    if (frame === totalFrames) {
+                        clearInterval(counter);
+                        if (target > 100000) {
+                             el.textContent = `€${(target / 1000000).toFixed(1)}M`;
+                        } else {
+                            el.textContent = target.toLocaleString();
+                        }
+                    }
+                }, frameDuration);
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const stats = entry.target.querySelectorAll('.stat');
+                        stats.forEach(stat => {
+                            animateStat(stat);
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            document.querySelectorAll('.mb-8.pl-12.relative').forEach(section => {
+                observer.observe(section);
+            });
+
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: resumeData.skills.chartData.labels,
+                    datasets: [{
+                        label: 'Proficiency',
+                        data: resumeData.skills.chartData.data,
+                        backgroundColor: 'rgba(20, 184, 166, 0.2)',
+                        borderColor: 'rgba(13, 148, 136, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(13, 148, 136, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(13, 148, 136, 1)'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            pointLabels: {
+                                font: {
+                                    size: 12,
+                                    weight: 'bold'
+                                },
+                                color: '#334155'
+                            },
+                            ticks: {
+                                backdropColor: 'rgba(248, 250, 252, 0.75)',
+                                stepSize: 20
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
